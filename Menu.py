@@ -2,8 +2,11 @@
 import time
 import curses
 import Juego as jg
+
+
 menu = ['Play' , 'Scoreboard', 'User Selection','Reports','Bulk loading','Exit']
 
+#function to print the menu
 def print_menu(stdscr,fila_actual):
     h,w=stdscr.getmaxyx()
 
@@ -20,13 +23,22 @@ def print_menu(stdscr,fila_actual):
 
     stdscr.refresh()
 
+#Function that asks for a Username to play
+def CrearUser(stdscr):
+    curses.echo()
+    stdscr.addstr(0,0,"Usuario: ")
+    usuarioActual=stdscr.getstr(0,9,15)
+    curses.noecho()
+    return usuarioActual
+
+#Function to go through the menu
 def main(stdscr):
     curses.curs_set(0)
-    curses.init_pair(1,curses.COLOR_BLACK,curses.COLOR_WHITE)
+    curses.init_pair(1,curses.COLOR_BLACK,curses.COLOR_WHITE) #Highlights the first option
     fila=0
     print_menu(stdscr,fila)
 
-    while 1:
+    while 1: #highlights the option according to the key pressed.
         key = stdscr.getch()
         stdscr.clear()
 
@@ -42,7 +54,8 @@ def main(stdscr):
                 break
             elif fila == 0:
                 stdscr.clear()
-                jg.jugar()
+                user=CrearUser(stdscr)
+                jg.jugar(user) #Starts a new game with the user selected
             elif fila==1:
                 stdscr.addstr(0,0,"ScoreBoard")
                 stdscr.refresh()
@@ -65,3 +78,4 @@ def main(stdscr):
         stdscr.refresh()
 
 curses.wrapper(main)
+

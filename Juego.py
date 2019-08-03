@@ -2,7 +2,7 @@ import curses
 from curses import textpad
 
 
-def jugar():
+def jugar(user):
     import curses #import the curses library
     from curses import KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN #import special KEYS from the curses library
 
@@ -18,14 +18,17 @@ def jugar():
     window.border(0)        #default border for our window
     window.nodelay(True)    #return -1 when no key is pressed
 
-    score=5
+    score=5 #Score Variable starts at 0
+    usuario=user #User Var
+    #Adding text strings to the top of the windows
     textosc='Score: '+str(score)
     textosn='SNAKE RELOADED:'
-    usuario='breSt12'
     textous='User: '+usuario
     window.addstr(0,5,textosc)
     window.addstr(0,(width/2)-10,textosn)
-    window.addstr(0,(width-len(textous))-1,textous)
+    window.addstr(0,(width-len(textous))-2,textous)
+
+
     key = KEY_RIGHT         #key defaulted to KEY_RIGHT
     pos_x = 5               #initial x position
     pos_y = 5               #initial y position
