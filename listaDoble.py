@@ -1,7 +1,8 @@
 class Nodo:
-    def __init__(self, x, y):
+    def __init__(self, x, y, key):
         self.x = x
         self.y = y
+        self.key = key
         self.sig = None
         self.anterior = None
 
@@ -12,31 +13,31 @@ class lista:
         self.inicio = None
         self.size = 0
 
-    def insertar_inicio(self, x, y):
+    def insertar_inicio(self, x, y, key):
         if self.inicio is None:
-            nuevo_Nodo = Nodo(x, y)
+            nuevo_Nodo = Nodo(x, y, key)
             self.inicio = nuevo_Nodo
         else:
-            nuevo_Nodo = Nodo(x, y)
+            nuevo_Nodo = Nodo(x, y, key)
             nuevo_Nodo.sig = self.inicio
             self.inicio.anterior = nuevo_Nodo
             self.inicio = nuevo_Nodo
         self.size += 1
 
-    def insertar_final(self, x, y):
+    def insertar_final(self, x, y, key):
         if self.inicio is None:
-            nuevo_Nodo = Nodo(x, y)
+            nuevo_Nodo = Nodo(x, y, key)
             self.inicio = nuevo_Nodo
         else:
             temp = self.inicio
             while temp.sig is not None:
                 temp = temp.sig
-            nuevo_Nodo = Nodo(x, y)
+            nuevo_Nodo = Nodo(x, y, key)
             temp.sig = nuevo_Nodo
             nuevo_Nodo.anterior = temp
         self.size += 1
 
-    def insertar_pos(self, index, x, y):
+    def insertar_pos(self, index, x, y, key):
         if self.inicio is None:
             print("Lista Vacia")
         else:
@@ -44,11 +45,11 @@ class lista:
                 pass
             else:
                 if index == 0:
-                    self.insertar_inicio(x, y)
+                    self.insertar_inicio(x, y, key)
                 elif index == self.size-1:
-                    self.insertar_final(x, y)
+                    self.insertar_final(x, y, key)
                 elif index > 0 and index < self.size-1:
-                    nuevo_Nodo = Nodo(x, y)
+                    nuevo_Nodo = Nodo(x, y, key)
                     temp = self.inicio
                     count = 0
                     while count != index:

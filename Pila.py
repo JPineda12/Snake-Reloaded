@@ -39,5 +39,25 @@ class Pila:
             print(""+str(self.inicio.x)+","+str(self.inicio.y)+","+str(self.inicio.valor))  # noqa
             self.pop()
 
+    def graficar(self):
+        file = open("graficaStack.dot", "w")
+        file.write("digraph foo {\n")
+        file.write("rankdir=LR;\n")
+        file.write("node [shape=record];\n")
+        temp = self.inicio
+        for x in range(0, self.size):
+            # a [label="{ <data> (breSt12,15) | <ref>  }", width=1.9]
+            file.write(str(x)+" [label=\"{ <data> ("+str(temp.valor)+"| <ref>  }\", width=1.2]\n")  # noqa
+            temp = temp.sig
+        for y in range(0, self.size-1):
+            file.write(str(y)+" -> "+str(y+1)+"\n")
+            file.write(str(y+1)+" ->"+str(y)+"\n")
+        file.write("}")
+        file.close()
+
+        import os
+        os.system("dot graficaStack.dot -Tpng -o Stack.png")
+        os.system("eog Stack.png")
+
     def getSize(self):
         return self.size

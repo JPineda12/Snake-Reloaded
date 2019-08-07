@@ -24,7 +24,6 @@ class listaCircular:
             self.head.prev = nuevo
             nuevo.prev = last
             last.next = nuevo
-        
 
     def insert_first(self, info):
         if self.head is None:
@@ -52,6 +51,42 @@ class listaCircular:
 
     def getSize(self):
         return self.size
+
+    def graficar(self):
+        if self.size > 0:
+            file = open("graficaCircular.dot", "w")
+            file.write("digraph foo {\n")
+            file.write("rankdir=LR;\n")
+            file.write("node [shape=record];\n")
+            temp = self.head
+            x = 0
+            file.write("p"+str(x)+" [label=\"{<prev> | <data> "+str(temp.info.getNombre())+" | <next>}\", width=1.2]\n")  # noqa
+            temp = temp.next
+            while temp is not self.head:
+                x += 1
+                file.write("p"+str(x)+" [label=\"{<prev> | <data> "+str(temp.info.getNombre())+" | <next>}\", width=1.2]\n")  # noqa
+                temp = temp.next
+            file.write("{node[shape=point height=0] pf pl}\n")
+            file.write("pf:n -> p0[arrowtail=none]\n")
+            file.write("pf:s -> pl:s[dir=none]\n")
+            for y in range(0, self.size-1):
+                if y >= self.size-2:
+                    file.write("p"+str(y)+":next:c -> p"+str(y+1)+";\n")
+                    file.write("p"+str(y+1)+":prev:c -> p"+str(y)+";\n")
+                else:
+                    file.write("p"+str(y)+":next:c -> p"+str(y+1)+":prev;\n")
+                    file.write("p"+str(y+1)+":prev:c -> p"+str(y)+":next;\n")
+            file.write("p0:c -> p"+str(x)+":data\n")
+            file.write("p"+str(x)+":next:c -> pl:n[arrowhead=none]\n")
+            file.write("}")
+            file.close()
+
+            import os
+            os.system("dot graficaCircular.dot -Tpng -o grafcirc.png")
+            os.system("eog grafcirc.png")
+            return True
+
+        return False
 
     def imprimir(self):
         temp = self.head.next

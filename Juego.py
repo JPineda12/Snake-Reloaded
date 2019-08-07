@@ -2,9 +2,12 @@ import curses
 from curses import textpad
 from listaDoble import lista
 from Pila import Pila
+from curses import KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN, KEY_ENTER
 import random
 height = 17
 width = 45
+lSnake = lista()
+lScore = Pila()
 
 
 def checkWalls(pos_x, pos_y):   # Function to check collisions with walls
@@ -87,52 +90,67 @@ def createObstacle(snake, score, level, obstacles):
     return obstacle, obstacle_x, obstacle_y
 
 
-def jugar(user):
-    # import special KEYS from the curses library
-    from curses import KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN
-    scorePila = Pila()
-    # stdscr = curses.initscr() #initialize console
+def jugar(user, punteo, scfinal, paused):
+
+    stdscr = curses.initscr()  # initialize console
     pos_y = 0
     pos_x = 0
-    window = curses.newwin(height, width, pos_y, pos_x)  # create a new window
+    h, w = stdscr.getmaxyx()
+    window = curses.newwin(height, width, h/2-10, w/2-15)  # create new window
     window.keypad(True)     # enable Keypad mode
     curses.noecho()         # prevent input from displaying in the screen
     curses.curs_set(0)      # cursor invisible (0)
     window.border(0)        # default border for our window
     window.nodelay(True)    # return -1 when no key is pressed
-    score = 0               # Score Variable starts at 0
     usuario = user          # User Var
     # Adding text strings to the top of the windows
-    lvl = 0
-    # textlvl = 'Level:'+str(lvl)
-    textosc = 'Score:'+str(score)
     textosn = 'SNAKE RELOADED'
     textous = 'User:'+usuario
-    window.addstr(0, 2, textosc)
-    # window.addstr(0, 1, textlvl)
     window.addstr(0, (width/2)-len(textosn)/2, textosn)
     window.addstr(0, (width-len(textous))-1, textous)
-    key = KEY_RIGHT         # key defaulted to KEY_RIGHT
-    pos_x = 4               # initial x position
-    pos_y = 4               # initial y position
-
+    key = KEY_RIGHT
+    pos_x = 4
+    pos_y = 4
     # Creating the Snake
     # inserting the initial positions of the snake
-    snake = lista()
-    score = 0
-    snake.insertar_inicio(pos_x, pos_y)
-    snake.insertar_inicio((pos_x-1), (pos_y))
-    snake.insertar_inicio((pos_x-2), (pos_y))
+    if paused is False:
+        for n in range(0, lSnake.getSize()):
+            lSnake.eliminar(n)
+        for n in range(0, lScore.getSize()):
+            lScore.pop()
+
+    snake = lSnake
+    scorePila = lScore
+    if paused:
+        score = punteo
+    else:
+        score = 0               # Score Variable starts at 0
+    textosc = 'Score:'+str(score)
+    window.addstr(0, 2, textosc)
+    if snake.getSize() > 0:
+        pos_x = snake.obtener_pos(0).x  # initial x position
+        pos_y = snake.obtener_pos(0).y  # initial y position
+        key = lSnake.obtener_pos(0).key
+    if snake.getSize() is 0:
+        snake.insertar_inicio(pos_x, pos_y, key)
+        snake.insertar_inicio((pos_x-1), (pos_y), key)
+        snake.insertar_inicio((pos_x-2), (pos_y), key)
     for i in range(0, snake.getSize()):
         window.addch(snake.obtener_pos(i).y, snake.obtener_pos(i).x, '$')
     # Creating food
-    food_x, food_y, tipo = createFood(snake, score, scorePila)
+    if paused:
+        food_x = scorePila.peek().x
+        food_y = scorePila.peek().y
+        tipo = scorePila.peek().valor
+    else:
+        food_x, food_y, tipo = createFood(snake, score, scorePila)
     window.addch(food_y, food_x, tipo)
     time = 300
     gameOver = False
-    scoreFinal = 0
+    paused = False
+    scoreFinal = scfinal
     while key != 27:              # run program while [ESC] key is not pressed
-        if gameOver is False:
+        if gameOver is False and paused is False:
             window.timeout(time)         # delay of 100 milliseconds
             keystroke = window.getch()  # get current key being pressed
             # Increase the game speed
@@ -145,10 +163,9 @@ def jugar(user):
                     time = time - 100
                 score = 0
                 textosc = 'Score:'+str(score)+" "
-                lvl = lvl+1
                 window.addstr(0, 2, textosc)
 
-            if keystroke is not -1:     # key is pressed
+            if keystroke in [KEY_DOWN, KEY_LEFT, KEY_UP, KEY_RIGHT, 80, 112, KEY_ENTER]:     # key is pressed # noqa
                 key = keystroke         # key direction changes
 
             if key == KEY_RIGHT:                # right direction
@@ -159,12 +176,16 @@ def jugar(user):
                 pos_x, pos_y = checkWalls(pos_x, pos_y-1)
             elif key == KEY_DOWN:               # down direction
                 pos_x, pos_y = checkWalls(pos_x, pos_y+1)
-
-            gameOver = checkGameOver(pos_x, pos_y, snake)
+            elif key in [80, 112, KEY_ENTER]:
+                paused = True
+            if paused is False:
+                gameOver = checkGameOver(pos_x, pos_y, snake)
             if gameOver:
                 window.addstr(10, 20, "Game Over!")
+            elif paused:
+                window.addstr(10, 20, "Paused!")
             else:
-                snake.insertar_inicio(pos_x, pos_y)
+                snake.insertar_inicio(pos_x, pos_y, key)
                 increase = False
                 if pos_x is food_x and pos_y is food_y:
                     # Check if the food is good or bad
@@ -196,4 +217,4 @@ def jugar(user):
             back = window.getch()
             if back is not -1:
                 break
-    return usuario, scoreFinal
+    return usuario, score, scoreFinal, paused

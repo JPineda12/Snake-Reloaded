@@ -32,6 +32,32 @@ class Cola:
     def get_Size(self):
         return self.size
 
+    def graficar(self):
+        if self.size > 0:
+            file = open("graficaStack.dot", "w")
+            file.write("digraph foo {\n")
+            file.write("rankdir=LR;\n")
+            file.write("node [shape=record];\n")
+            temp = self.head
+            x = -1
+            while temp is not None:
+                x += 1
+                file.write(str(x)+" [label=\"{ <data> ("+str(temp.info.getNombre())+","+str(temp.info.getPunteo())+") | <ref>  }\", width=1.9]\n")  # noqa
+                temp = temp.next
+            file.write("null [shape=box];\n")
+            for y in range(0, self.size-1):
+                file.write(str(y)+" -> "+str(y+1)+"\n")
+            file.write(str(x)+" -> null\n")
+            file.write("")
+            file.write("}")
+            file.close()
+
+            import os
+            os.system("dot graficaStack.dot -Tpng -o Stack.png")
+            os.system("eog Stack.png")
+            return True
+        return False
+
     def imprimir(self):
         temp = self.head
         while temp.next is not None:
