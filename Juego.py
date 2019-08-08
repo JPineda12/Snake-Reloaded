@@ -145,14 +145,16 @@ def jugar(user, punteo, scfinal, paused):
     else:
         food_x, food_y, tipo = createFood(snake, score, scorePila)
     window.addch(food_y, food_x, tipo)
-    time = 300
+    time = 100
     gameOver = False
     paused = False
     scoreFinal = scfinal
+    lastkey = -1
     while key != 27:              # run program while [ESC] key is not pressed
         if gameOver is False and paused is False:
             window.timeout(time)         # delay of 100 milliseconds
             keystroke = window.getch()  # get current key being pressed
+
             # Increase the game speed
             if score > 14:
                 if time is 100:
@@ -169,13 +171,29 @@ def jugar(user, punteo, scfinal, paused):
                 key = keystroke         # key direction changes
 
             if key == KEY_RIGHT:                # right direction
-                pos_x, pos_y = checkWalls(pos_x+1, pos_y)
+                if lastkey == KEY_LEFT:
+                    snake.reverse_headtail()
+                    pos_x, pos_y = checkWalls(pos_x-1, pos_y)
+                else:
+                    pos_x, pos_y = checkWalls(pos_x+1, pos_y)
             elif key == KEY_LEFT:               # left direction
-                pos_x, pos_y = checkWalls(pos_x-1, pos_y)
+                if lastkey == KEY_RIGHT:
+                    snake.reverse_headtail()
+                    pos_x, pos_y = checkWalls(pos_x+1, pos_y)
+                else:
+                    pos_x, pos_y = checkWalls(pos_x-1, pos_y)
             elif key == KEY_UP:                 # up direction
-                pos_x, pos_y = checkWalls(pos_x, pos_y-1)
+                if lastkey == KEY_DOWN:
+                    snake.reverse_headtail()
+                    pos_x, pos_y = checkWalls(pos_x, pos_y+1)
+                else:
+                    pos_x, pos_y = checkWalls(pos_x, pos_y-1)
             elif key == KEY_DOWN:               # down direction
-                pos_x, pos_y = checkWalls(pos_x, pos_y+1)
+                if lastkey == KEY_UP:
+                    snake.reverse_headtail()
+                    pos_x, pos_y = checkWalls(pos_x, pos_y-1)
+                else:
+                    pos_x, pos_y = checkWalls(pos_x, pos_y+1)
             elif key in [80, 112, KEY_ENTER]:
                 paused = True
             if paused is False:
@@ -212,9 +230,10 @@ def jugar(user, punteo, scfinal, paused):
                     snake.eliminar(snakelast)
                 for i in range(0, snake.getSize()):
                     window.addch(snake.obtener_pos(i).y, snake.obtener_pos(i).x, '$')  # noqa
+                lastkey = key   # Saves the last key pressed to compare in the next iteration # noqa
                 window.refresh()
         else:
             back = window.getch()
             if back is not -1:
                 break
-    return usuario, score, scoreFinal, paused
+    return usuario, score, scoreFinal, paused, snake, lScore, gameOver

@@ -34,7 +34,7 @@ class Cola:
 
     def graficar(self):
         if self.size > 0:
-            file = open("graficaStack.dot", "w")
+            file = open("graficaCola.dot", "w")
             file.write("digraph foo {\n")
             file.write("rankdir=LR;\n")
             file.write("node [shape=record];\n")
@@ -53,8 +53,8 @@ class Cola:
             file.close()
 
             import os
-            os.system("dot graficaStack.dot -Tpng -o Stack.png")
-            os.system("eog Stack.png")
+            os.system("dot graficaCola.dot -Tpng -o cola.png")
+            os.system("eog cola.png")
             return True
         return False
 

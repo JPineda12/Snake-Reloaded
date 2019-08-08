@@ -72,6 +72,17 @@ class lista:
                 count += 1
             return temp
 
+    def reverse_headtail(self):  # function that reverses the list
+        temp = None
+        cur = self.inicio
+        while cur is not None:
+            temp = cur.anterior
+            cur.anterior = cur.sig
+            cur.sig = temp
+            cur = cur.anterior
+        if temp is not None:
+            self.inicio = temp.anterior
+
     def eliminar(self, index):
         if index < 0 or index > self.size-1:
             pass
@@ -101,20 +112,30 @@ class lista:
         return self.size
 
     def graficar(self):
-        file = open("grafica.dot", "w")
-        file.write("digraph foo {\n")
-        file.write("rankdir=LR;\n")
-        file.write("node [shape=record];\n")
-        temp = self.inicio
-        for x in range(0, self.size):
-            file.write(str(x)+" [label=\"{ <data> "+str(temp, x)+"| <ref>  }\", width=1.2]\n")  # noqa
-            temp = temp.sig
-        for y in range(0, self.size-1):
-            file.write(str(y)+" -> "+str(y+1)+"\n")
-            file.write(str(y+1)+" ->"+str(y)+"\n")
-        file.write("}")
-        file.close()
+        if self.size > 0:
+            file = open("graficaDoble.dot", "w")
+            file.write("digraph foo {\n")
+            file.write("rankdir=LR;\n")
+            file.write("node [shape=record];\n")
+            temp = self.inicio
+            file.write("pf [label=\"{ <data> null}\", width=1.2]\n")
+            for x in range(0, self.size):
+                file.write("p"+str(x)+" [label=\"{ <data> ("+str(temp.x)+","+str(temp.y)+")"+"| <ref>  }\", width=1.2]\n")  # noqa
+                temp = temp.sig
+            file.write("pl [label=\"{ <data> null}\", width=1.2]\n")
+            n = 0
+            for y in range(0, self.size-1):
+                file.write("p"+str(y)+" -> p"+str(y+1)+"\n")
+                file.write("p"+str(y+1)+" ->p"+str(y)+"\n")
+                n += 1
+            file.write("p0-> pf\n")
+            file.write("pf-> p0:data[arrowhead=none]\n")
+            file.write("p"+str(n)+" -> pl\n")
+            file.write("}")
+            file.close()
 
-        import os
-        os.system("dot grafica.dot -Tpng -o graf.png")
-        os.system("eog graf.png")
+            import os
+            os.system("dot graficaDoble.dot -Tpng -o grafsnake.png")
+            os.system("eog grafsnake.png")
+            return True
+        return False
