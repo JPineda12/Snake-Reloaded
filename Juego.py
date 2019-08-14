@@ -50,7 +50,7 @@ def createFood(snake, score, scorePila):
     # print("("+str(foodx)+","+str(foody))
 
     if score > 0 and score < 14:
-        tipo = random.choice(['*', '+', '+', '+'])
+        tipo = random.choice(['*', '+', '+', '+', '+'])
     scorePila.push(foodx, foody, tipo)
     return foodx, foody, tipo  # Returning the x,y coords to create the food
 
@@ -132,9 +132,9 @@ def jugar(user, punteo, scfinal, paused):
         pos_y = snake.obtener_pos(0).y  # initial y position
         key = lSnake.obtener_pos(0).key
     if snake.getSize() is 0:
-        snake.insertar_inicio(pos_x, pos_y, key)
-        snake.insertar_inicio((pos_x-1), (pos_y), key)
-        snake.insertar_inicio((pos_x-2), (pos_y), key)
+        snake.insertar_final(pos_x, pos_y, key)
+        snake.insertar_final((pos_x-1), (pos_y), key)
+        snake.insertar_final((pos_x-2), (pos_y), key)
     for i in range(0, snake.getSize()):
         window.addch(snake.obtener_pos(i).y, snake.obtener_pos(i).x, '$')
     # Creating food
@@ -214,6 +214,7 @@ def jugar(user, punteo, scfinal, paused):
                     elif scorePila.peek().valor is '*':
                         score = score - 2       # subtracts the score
                         scoreFinal = scoreFinal - 2
+                        scorePila.pop()
                         scorePila.pop()
                         # Snake decreases
                         snakelast = snake.getSize()-1
