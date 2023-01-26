@@ -1,0 +1,22 @@
+digraph foo {
+rankdir=LR;
+node [shape=record];
+p0 [label="{<prev> | <data> Juan1 | <next>}", width=1.2]
+p1 [label="{<prev> | <data> Juan2 | <next>}", width=1.2]
+p2 [label="{<prev> | <data> gabs3 | <next>}", width=1.2]
+p3 [label="{<prev> | <data> tiea4 | <next>}", width=1.2]
+p4 [label="{<prev> | <data> rumble5 | <next>}", width=1.2]
+{node[shape=point height=0] pf pl}
+pf:n -> p0[arrowtail=none]
+pf:s -> pl:s[dir=none]
+p0:next:c -> p1:prev;
+p1:prev:c -> p0:next;
+p1:next:c -> p2:prev;
+p2:prev:c -> p1:next;
+p2:next:c -> p3:prev;
+p3:prev:c -> p2:next;
+p3:next:c -> p4;
+p4:prev:c -> p3;
+p0:c -> p4:data
+p4:next:c -> pl:n[arrowhead=none]
+}

@@ -1,4 +1,3 @@
-
 import time
 import curses
 import Juego as jg
@@ -8,7 +7,7 @@ from User import User
 from listaDoble import lista
 from Pila import Pila
 menu = ['Play', 'Scoreboard', 'User Selection', 'Reports', 'Bulk loading', 'Exit']  # noqa
-# usuarios = listaCircular()
+usuarios = listaCircular()
 scores = Cola()
 scorePila = Pila()
 snake = lista()
@@ -21,16 +20,16 @@ def print_menu(stdscr, fila_actual, paused):
     word = "Game Menu"
     if paused:
         word = "Game Paused"
-    x = w//2 - len(word)//2
-    y = h/2 - len(menu)//2 - 1
+    x = int(w//2 - len(word)//2)
+    y = int(h/2 - len(menu)//2 - 1)
     stdscr.addstr(y, x, word)
     word = "-----------"
     x = w//2 - len(word)//2
     stdscr.addstr(y+1, x, word)
 
     for idx, row in enumerate(menu):
-        x = w//2 - len(row)//2
-        y = h/2 - len(menu)//2 + idx + 1
+        x = int(w//2 - len(row)//2)
+        y = int(h/2 - len(menu)//2 + idx + 1)
         if(idx == fila_actual):
             stdscr.attron(curses.color_pair(1))
             stdscr.addstr(y, x, row)
@@ -45,7 +44,7 @@ def print_menu(stdscr, fila_actual, paused):
 def scoreBoard(stdscr):
     h, w = stdscr.getmaxyx()
     stdscr.clear()
-    stdscr = curses.newwin(20, 40, h/2-10, w/2-15)
+    stdscr = curses.newwin(20, 40, int(h/2-10), int(w/2-15))
     stdscr.border(0)
     stdscr.addstr(0, 20-5, "SCOREBOARD")
 
@@ -58,15 +57,15 @@ def scoreBoard(stdscr):
         stdscr.addstr(5+i, 12, nombre)
         stdscr.addstr(5+i, 23, str(punteo))
         temporal.insert(User(nombre, punteo))
-        scores.unqueued()
-    while temporal.get_Size() is not 0:
+        scores.unqueue()
+    while temporal.get_Size() != 0:
         nombre = temporal.peek().info.getNombre()
         punteo = temporal.peek().info.getPunteo()
         scores.insert(User(nombre, punteo))
-        temporal.unqueued()
+        temporal.unqueue()
     stdscr.refresh()
     back = stdscr.getch()
-    if back is not -1:
+    if back != -1:
         return
 
 
@@ -74,7 +73,7 @@ def userSelection(stdscr, usuarios):
     from curses import KEY_RIGHT, KEY_LEFT, KEY_ENTER
     h, w = stdscr.getmaxyx()
     stdscr.clear()
-    stdscr = curses.newwin(20, 40, h/2-10, w/2-15)
+    stdscr = curses.newwin(20, 40, int(h/2-10), int(w/2-15))
     stdscr.keypad(True)     # enable Keypad mode
     curses.noecho()         # prevent input from displaying in the screen
     curses.curs_set(0)      # cursor invisible (0)
@@ -85,7 +84,7 @@ def userSelection(stdscr, usuarios):
     user = usuarios.get_pos(0)
     stdscr.addstr(7, 13, "<-")
     stdscr.addstr(7, 27, "->")
-    stdscr.addstr(7, 20-len(user.info.getNombre())/2, user.info.getNombre())
+    stdscr.addstr(7, int(20-len(user.info.getNombre())/2), user.info.getNombre())
     stdscr.refresh()
     key = -1
     while key != 27:
@@ -99,11 +98,11 @@ def userSelection(stdscr, usuarios):
         elif key == 27:
             return None
         stdscr.addstr(7, 20-5, "         ")  # Wipes out the space for the new name # noqa
-        stdscr.addstr(7, 20-len(user.info.getNombre())/2, user.info.getNombre())  # noqa
+        stdscr.addstr(7, int(20-len(user.info.getNombre())/2), user.info.getNombre())  # noqa
         stdscr.refresh()
     if user is None:
         return None
-    return user.info.getNombre()
+    return user.info
 
 
 def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
@@ -125,7 +124,7 @@ def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
             elif fila == 0:
                 words = "Generating Snake Report...."
                 words2 = " "
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 time.sleep(1.0)
                 success = snake.graficar()
@@ -140,14 +139,14 @@ def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
                     stdscr.clear()
                     words = "There is no snake to report"
                     words2 = "You have to play a game first."
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
-                stdscr.addstr((h/2)+1, w/2-len(words)/2, words2)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
+                stdscr.addstr(int((h/2)+1), int(w/2-len(words)/2), words2)
                 stdscr.refresh()
                 stdscr.getch()
             elif fila == 1:
                 words = "Generating Score Report...."
                 words2 = " "
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 time.sleep(1.0)
                 success = scorePila.graficar()
@@ -159,13 +158,13 @@ def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
                     stdscr.clear()
                     words = "There is no score to report"
                     words2 = "You have to play a game first!"
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
-                stdscr.addstr((h/2)+1, w/2-len(words)/2, words2)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
+                stdscr.addstr(int((h/2)+1), int(w/2-len(words)/2), words2)
                 stdscr.refresh()
                 stdscr.getch()
             elif fila == 2:
                 words = "Generating Scoreboard Report...."
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 time.sleep(1.0)
                 success = scores.graficar()
@@ -175,12 +174,12 @@ def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
                 elif success is False:
                     stdscr.clear()
                     words = "There is no scoreboard to report!"
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 stdscr.getch()
             elif fila == 3:
                 words = "Generating Users Report...."
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 time.sleep(1.0)
                 success = usuarios.graficar()
@@ -189,8 +188,8 @@ def snakeReports(stdscr, paused, gameOver, snake, scorePila, usuarios):
                     words = "User Report Generated!"
                 elif success is False:
                     stdscr.clear()
-                    words = "There is no users to report!"
-                stdscr.addstr(h/2, w/2-len(words)/2, words)
+                    words = "There are no users to report!"
+                stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                 stdscr.refresh()
                 stdscr.getch()
         print_repMenu(stdscr, rMenu, fila)
@@ -204,16 +203,16 @@ def print_repMenu(stdscr, rMenu, fila_actual):
     word = "Snake Reloaded Reports"
     # if paused:
     #    word = "Game Paused"
-    x = w//2 - len(word)//2
-    y = h/2 - len(rMenu)//2 - 1
+    x = int(w//2 - len(word)//2)
+    y = int(h/2 - len(rMenu)//2 - 1)
     stdscr.addstr(y, x, word)
     word = "--------------------------"
-    x = w//2 - len(word)//2
+    x = int(w//2 - len(word)//2)
     stdscr.addstr(y+1, x, word)
 
     for idx, row in enumerate(rMenu):
-        x = w//2 - len(row)//2
-        y = h/2 - len(rMenu)//2 + idx + 1
+        x = int(w//2 - len(row)//2)
+        y = int(h/2 - len(rMenu)//2 + idx + 1)
         if(idx == fila_actual):
             stdscr.attron(curses.color_pair(1))
             stdscr.addstr(y, x, row)
@@ -229,27 +228,31 @@ def print_repMenu(stdscr, rMenu, fila_actual):
 def CrearUser(stdscr, usuarios):
     curses.echo()
     stdscr.addstr(0, 0, "Usuario: ")
-    usuarioActual = stdscr.getstr(0, 9, 7)
+    usuarioActual = str(stdscr.getstr(0, 9, 7))
     curses.noecho()
-    usuarios.insert_last(User(""+usuarioActual, 0))
+    newUser = User(usuarioActual,0)
+    usuarios.insert_last(newUser)
     stdscr.clear()
-    return usuarioActual
+    return newUser
 
 
 def readcsv(archivo, usuarios):
-    if ".csv" in archivo:
+    if ".csv" in archivo.decode():
         n = len(archivo)
         archivo = archivo[:n-4]
     import csv
     try:
-        with open(archivo+'.csv') as csvFile:
+        with open(archivo.decode()+'.csv') as csvFile:
             reader = csv.reader(csvFile)
             line = 0
             for row in reader:
-                if line is 0:
+                if line == 0:
                     pass
                 else:
-                    usuarios.insert_last(User(""+str(row[0]), "0"))
+                    usuarios.insert_last(User(""+str(row[0]), str(row[1])))
+                    if scores.get_Size() == 10:
+                        scores.unqueue()
+                    scores.insert(User(""+str(row[0]), str(row[1])))
                 line += 1
             return True
     except IOError:
@@ -261,9 +264,9 @@ def bulkloading(stdscr, usuarios):
     stdscr.clear()
     word = "File's Name: "
     curses.echo()
-    stdscr.addstr(h/2, w/2 - len(word) - 5, word)
+    stdscr.addstr(int(h/2), int(w/2 - len(word) - 5), word)
     stdscr.refresh()
-    archivo = stdscr.getstr(h/2, w/2 - len(word)/2, 20)
+    archivo = stdscr.getstr(int(h/2), int(w/2 - len(word)/2)+2, 20)
     curses.noecho()
     if readcsv(archivo, usuarios):
 
@@ -271,7 +274,7 @@ def bulkloading(stdscr, usuarios):
     else:
         word = "Wrong file name"
     stdscr.clear()
-    stdscr.addstr(h/2, w/2 - len(word)/2, word)
+    stdscr.addstr(int(h/2), int(w/2 - len(word)/2), word)
     stdscr.refresh()
 
     return
@@ -280,7 +283,7 @@ def bulkloading(stdscr, usuarios):
 # Function to go through the menu
 def main(stdscr):
     curses.curs_set(0)
-    userSelected = None
+    selectedUser = None
     paused = False
     gameOver = False
     snake = lista()
@@ -308,22 +311,22 @@ def main(stdscr):
                 break
             elif fila == 0:
                 stdscr.clear()
-                if userSelected is None:
-                    # If you haven't selected a username, create a new one
-                    userSelected = CrearUser(stdscr, usuarios)
+                if selectedUser is None:
+                    # If you haven't select a username, create a new one
+                    selectedUser = CrearUser(stdscr, usuarios)
 
                 # Starts a new game with the user selected
                 # and returns the player and his score when the game ends
-                player, initialScore, finalScore, paused, snake, scorePila, gameOver = jg.jugar(userSelected, initialScore, finalScore, paused)  # noqa
+                player, initialScore, finalScore, paused, snake, scorePila, gameOver = jg.jugar(selectedUser, initialScore, finalScore, paused)  # noqa
                 if paused:
-                    userSelected = player
+                    selectedUser = player
                 else:
-                    userSelected = None
+                    selectedUser = None
                     initialScore = 0
                     # inserts the score of the player in the scores list
-                    if scores.get_Size() is 10:
-                        scores.unqueued()
-                    scores.insert(User(player, finalScore))
+                    if scores.get_Size() == 10:
+                        scores.unqueue()
+                    scores.insert(User(player.getNombre(), finalScore))
                     finalScore = 0
 
             elif fila == 1:
@@ -332,16 +335,16 @@ def main(stdscr):
             elif fila == 2:
                 if paused is False:
                         if usuarios.getSize():
-                            userSelected = userSelection(stdscr, usuarios)
+                            selectedUser = userSelection(stdscr, usuarios)
                         else:
                             h, w = stdscr.getmaxyx()
                             words = "There's no usernames"
-                            stdscr.addstr(h/2, w/2-len(words)/2, words)
+                            stdscr.addstr(int(h/2), int(w/2-len(words)/2), words)
                             stdscr.getch()
                             stdscr.refresh()
                 else:
                     h, w = stdscr.getmaxyx()
-                    words = "Can't select user when game paused"
+                    words = "Can't select user when game's paused"
                     stdscr.addstr(h/2, w/2-len(words)/2, words)
                     stdscr.getch()
                 stdscr.refresh()

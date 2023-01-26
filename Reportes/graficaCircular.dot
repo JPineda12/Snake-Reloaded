@@ -1,0 +1,10 @@
+digraph foo {
+rankdir=LR;
+node [shape=record];
+p0 [label="{<prev> | <data> b'asd' | <next>}", width=1.2]
+{node[shape=point height=0] pf pl}
+pf:n -> p0[arrowtail=none]
+pf:s -> pl:s[dir=none]
+p0:c -> p0:data
+p0:next:c -> pl:n[arrowhead=none]
+}

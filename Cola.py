@@ -19,7 +19,7 @@ class Cola:
             temp.next = Nodo(info)
         self.size += 1
 
-    def unqueued(self):
+    def unqueue(self):
         if self.head is None:
             self.head = None
         else:
@@ -34,7 +34,7 @@ class Cola:
 
     def graficar(self):
         if self.size > 0:
-            file = open("graficaCola.dot", "w")
+            file = open("Reportes/graficaCola.dot", "w")
             file.write("digraph foo {\n")
             file.write("rankdir=LR;\n")
             file.write("node [shape=record];\n")
@@ -51,10 +51,19 @@ class Cola:
             file.write("")
             file.write("}")
             file.close()
-
+            from sys import platform
             import os
-            os.system("dot graficaCola.dot -Tpng -o cola.png")
-            os.system("eog cola.png")
+            os.system("dot Reportes/graficaCola.dot -Tpng -o Reportes/cola.png")
+            if platform == "linux" or platform == "linux2":
+                # linux
+                os.system("eog Reportes/cola.png")
+            elif platform == "darwin":
+                # OS X
+                pass
+            elif platform == "win32":
+                # Windows...
+                os.system("start Reportes/cola.png")
+
             return True
         return False
 

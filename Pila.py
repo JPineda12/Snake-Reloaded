@@ -35,27 +35,36 @@ class Pila:
         return self.inicio
 
     def printpop(self):
-        while self.size is not 0:
+        while self.size != 0:
             print(""+str(self.inicio.x)+","+str(self.inicio.y)+","+str(self.inicio.valor))  # noqa
             self.pop()
 
     def graficar(self):
         if self.size > 0:
-            file = open("stack.dot", "w")
+            file = open("Reportes/stack.dot", "w")
             file.write("digraph foo {\n")
             file.write("node [shape=record];\n")
             temp = self.inicio.sig
             file.write("pila [label=\"{")
             while temp is not None:
-                if temp.valor is '+':
+                if temp.valor == '+':
                     file.write("|("+str(temp.x)+","+str(temp.y)+")")  # noqa
                 temp = temp.sig
             file.write("}\"];\n")
             file.write("}")
             file.close()
+            from sys import platform
             import os
-            os.system("dot stack.dot -Tpng -o stack.png")
-            os.system("eog stack.png")
+            os.system("dot Reportes/stack.dot -Tpng -o Reportes/stack.png")
+            if platform == "linux" or platform == "linux2":
+                # linux
+                os.system("eog Reportes/stack.png")
+            elif platform == "darwin":
+                # OS X
+                pass
+            elif platform == "win32":
+                # Windows...
+                os.system("start Reportes/stack.png")
             return True
 
         return False

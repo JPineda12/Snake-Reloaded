@@ -1,0 +1,31 @@
+digraph foo {
+rankdir=LR;
+node [shape=record];
+pf [label="{ <data> null}", width=1.2]
+p0 [label="{ <data> (30,10)| <ref>  }", width=1.2]
+p1 [label="{ <data> (29,10)| <ref>  }", width=1.2]
+p2 [label="{ <data> (29,11)| <ref>  }", width=1.2]
+p3 [label="{ <data> (30,11)| <ref>  }", width=1.2]
+p4 [label="{ <data> (31,11)| <ref>  }", width=1.2]
+p5 [label="{ <data> (32,11)| <ref>  }", width=1.2]
+p6 [label="{ <data> (33,11)| <ref>  }", width=1.2]
+p7 [label="{ <data> (34,11)| <ref>  }", width=1.2]
+pl [label="{ <data> null}", width=1.2]
+p0 -> p1
+p1 ->p0
+p1 -> p2
+p2 ->p1
+p2 -> p3
+p3 ->p2
+p3 -> p4
+p4 ->p3
+p4 -> p5
+p5 ->p4
+p5 -> p6
+p6 ->p5
+p6 -> p7
+p7 ->p6
+p0-> pf
+pf-> p0:data[arrowhead=none]
+p7 -> pl
+}

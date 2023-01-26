@@ -1,0 +1,15 @@
+digraph foo {
+rankdir=LR;
+node [shape=record];
+0 [label="{ <data> (Juan1, 40) | <ref>  }", width=1.9]
+1 [label="{ <data> (Juan2, 70) | <ref>  }", width=1.9]
+2 [label="{ <data> (gabs3, 14) | <ref>  }", width=1.9]
+3 [label="{ <data> (tiea4, 100) | <ref>  }", width=1.9]
+4 [label="{ <data> (rumble5, 20) | <ref>  }", width=1.9]
+null [shape=box];
+0 -> 1
+1 -> 2
+2 -> 3
+3 -> 4
+4 -> null
+}

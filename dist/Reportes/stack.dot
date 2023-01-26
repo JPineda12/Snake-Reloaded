@@ -1,0 +1,4 @@
+digraph foo {
+node [shape=record];
+pila [label="{|(11,8)|(40,3)}"];
+}

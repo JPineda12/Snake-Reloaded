@@ -67,7 +67,7 @@ class lista:
         else:
             temp = self.inicio
             count = 0
-            while(count != index):
+            while (count != index):
                 temp = temp.sig
                 count += 1
             return temp
@@ -90,7 +90,7 @@ class lista:
             temp = self.inicio
             count = 0
             if index > 0:
-                while(count != index):
+                while (count != index):
                     previo = temp
                     temp = temp.sig
                     count += 1
@@ -104,7 +104,7 @@ class lista:
 
     def imprimir(self):
         temp = self.inicio
-        while(temp is not None):
+        while (temp is not None):
             print("("+str(temp.x)+","+str(temp.y)+")")
             temp = temp.sig
 
@@ -113,7 +113,7 @@ class lista:
 
     def graficar(self):
         if self.size > 0:
-            file = open("graficaDoble.dot", "w")
+            file = open("Reportes/graficaDoble.dot", "w")
             file.write("digraph foo {\n")
             file.write("rankdir=LR;\n")
             file.write("node [shape=record];\n")
@@ -133,9 +133,18 @@ class lista:
             file.write("p"+str(n)+" -> pl\n")
             file.write("}")
             file.close()
-
+            from sys import platform
             import os
-            os.system("dot graficaDoble.dot -Tpng -o grafsnake.png")
-            os.system("eog grafsnake.png")
+            os.system("dot Reportes/graficaDoble.dot -Tpng -o Reportes/grafsnake.png")
+            if platform == "linux" or platform == "linux2":
+                # linux
+                os.system("eog Reportes/grafsnake.png")
+            elif platform == "darwin":
+                # OS X
+                pass
+            elif platform == "win32":
+                # Windows...
+                os.system("start Reportes/grafsnake.png")                
+        
             return True
         return False

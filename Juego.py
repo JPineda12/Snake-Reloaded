@@ -12,16 +12,16 @@ lScore = Pila()
 
 def checkWalls(pos_x, pos_y):   # Function to check collisions with walls
     # Pared izquierda X=0 y=y
-    if (pos_x) is 0:
+    if (pos_x) == 0:
         pos_x = width-2
     # Pared Derecha x=width y=y
-    elif (pos_x) is width-1:
+    elif (pos_x) == width-1:
         pos_x = 1
     # Pared Superior x=x y=0
-    elif (pos_y) is 0:
+    elif (pos_y) == 0:
         pos_y = height-2
     # Pared inferior x=x y=height
-    elif (pos_y) is height-1:
+    elif (pos_y) == height-1:
         pos_y = 1
     return pos_x, pos_y
 
@@ -61,17 +61,17 @@ def createObstacle(snake, score, level, obstacles):
     tipo = random.choice(['h', 'v'])  # Horizontal or Vertical Obstacle
     # Generating the walls
     obstacle = None
-    if tipo is 'h':
-        if level is 1:
+    if tipo == 'h':
+        if level == 1:
             obstacle = "--"
-        elif level is 2:
+        elif level == 2:
             obstacle = "---"
         elif level > 2:
             obstacle = "-----"
-    elif tipo is 'v':
-        if level is 1:
+    elif tipo == 'v':
+        if level == 1:
             obstacle = "|"
-        elif level is 2:
+        elif level == 2:
             obstacle = "|\n|"
         elif level > 3:
             obstacle = "|\n|\n|"
@@ -96,7 +96,7 @@ def jugar(user, punteo, scfinal, paused):
     pos_y = 0
     pos_x = 0
     h, w = stdscr.getmaxyx()
-    window = curses.newwin(height, width, h/2-10, w/2-15)  # create new window
+    window = curses.newwin(height, width, int(h/2-10), int(w/2-15))  # create new window
     window.keypad(True)     # enable Keypad mode
     curses.noecho()         # prevent input from displaying in the screen
     curses.curs_set(0)      # cursor invisible (0)
@@ -105,8 +105,9 @@ def jugar(user, punteo, scfinal, paused):
     usuario = user          # User Var
     # Adding text strings to the top of the windows
     textosn = 'SNAKE RELOADED'
-    textous = 'User:'+usuario
-    window.addstr(0, (width/2)-len(textosn)/2, textosn)
+    textous = 'User:'+usuario.getNombre()
+    window.addstr(0, int((width/2)-len(textosn)/2), textosn)
+
     window.addstr(0, (width-len(textous))-1, textous)
     key = KEY_RIGHT
     pos_x = 4
@@ -131,7 +132,7 @@ def jugar(user, punteo, scfinal, paused):
         pos_x = snake.obtener_pos(0).x  # initial x position
         pos_y = snake.obtener_pos(0).y  # initial y position
         key = lSnake.obtener_pos(0).key
-    if snake.getSize() is 0:
+    if snake.getSize() == 0:
         snake.insertar_final(pos_x, pos_y, key)
         snake.insertar_final((pos_x-1), (pos_y), key)
         snake.insertar_final((pos_x-2), (pos_y), key)
@@ -157,9 +158,9 @@ def jugar(user, punteo, scfinal, paused):
 
             # Increase the game speed
             if score > 14:
-                if time is 100:
+                if time == 100:
                     time = time - 25
-                elif time is 50:
+                elif time == 50:
                     time = 45
                 elif time > 100:
                     time = time - 100
@@ -194,7 +195,7 @@ def jugar(user, punteo, scfinal, paused):
                     pos_x, pos_y = checkWalls(pos_x, pos_y-1)
                 else:
                     pos_x, pos_y = checkWalls(pos_x, pos_y+1)
-            elif key in [80, 112, KEY_ENTER]:
+            elif key in [80, 112, 10, KEY_ENTER]:
                 paused = True
             if paused is False:
                 gameOver = checkGameOver(pos_x, pos_y, snake)
@@ -207,11 +208,11 @@ def jugar(user, punteo, scfinal, paused):
                 increase = False
                 if pos_x is food_x and pos_y is food_y:
                     # Check if the food is good or bad
-                    if scorePila.peek().valor is '+':
+                    if scorePila.peek().valor == '+':
                         score = score + 2       # Adds to the score
                         scoreFinal = scoreFinal + 2
                         increase = True
-                    elif scorePila.peek().valor is '*':
+                    elif scorePila.peek().valor == '*':
                         score = score - 2       # subtracts the score
                         scoreFinal = scoreFinal - 2
                         scorePila.pop()
@@ -235,6 +236,6 @@ def jugar(user, punteo, scfinal, paused):
                 window.refresh()
         else:
             back = window.getch()
-            if back is not -1:
+            if back != -1:
                 break
     return usuario, score, scoreFinal, paused, snake, lScore, gameOver

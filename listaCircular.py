@@ -54,7 +54,7 @@ class listaCircular:
 
     def graficar(self):
         if self.size > 0:
-            file = open("graficaCircular.dot", "w")
+            file = open("Reportes/graficaCircular.dot", "w")
             file.write("digraph foo {\n")
             file.write("rankdir=LR;\n")
             file.write("node [shape=record];\n")
@@ -81,9 +81,19 @@ class listaCircular:
             file.write("}")
             file.close()
 
+            from sys import platform
             import os
-            os.system("dot graficaCircular.dot -Tpng -o grafcirc.png")
-            os.system("eog grafcirc.png")
+            os.system("dot Reportes/graficaCircular.dot -Tpng -o Reportes/grafcirc.png")
+            if platform == "linux" or platform == "linux2":
+                # linux
+                os.system("eog Reportes/grafcirc.png")
+            elif platform == "darwin":
+                # OS X
+                pass
+            elif platform == "win32":
+                # Windows...
+                os.system("start Reportes/grafcirc.png")
+
             return True
 
         return False
